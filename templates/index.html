@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EC2 Instances and EBS Volumes</title>
+    <link rel="icon" href="https://cdn.icon-icons.com/icons2/2407/PNG/512/aws_icon_146237.png" type="image/png">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: linear-gradient(45deg, #9C27B0, #4CAF50);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            cursor: pointer;
+        }
+        th.title {
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        th.title:hover {
+            background-color: #333;
+            color: #fff;
+        }
+        tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <img src="https://cdn.icon-icons.com/icons2/2407/PNG/512/aws_icon_146237.png" alt="AWS Logo" style="display:block; margin:auto; width:200px;">
+    <h1>EC2 Instances and EBS Volumes</h1>
+    <table>
+        <thead>
+            <tr>
+                <th class="title" onclick="sortTable(0)">Name</th>
+                <th class="title" onclick="sortTable(1)">Instance Type</th>
+                <th class="title" onclick="sortTable(2)">State</th>
+                <th class="title" onclick="sortTable(3)">Public IP Address</th>
+                <th class="title" onclick="sortTable(4)">Launch Time</th>
+                <th class="title" onclick="sortTable(5)">Volume Size (GiB)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for instance in instances %}
+            <tr>
+                <td>{{ instance.Name }}</td>
+                <td>{{ instance['Instance Type'] }}</td>
+                <td>{{ instance.State }}</td>
+                <td>{{ instance['Public IP Address'] }}</td>
+                <td>{{ instance['Launch Time'] }}</td>
+                <td>{{ instance['Volume Size'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+<script>
+    function sortTable(n) {
+        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        table = document.querySelector("table");
+        switching = true;
+        // Set the sorting direction to ascending:
+        dir = "asc"; 
+        while (switching) {
+            switching = false;
+            rows = table.rows;
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                // Get the two elements you want to compare, one from current row and one from the next:
+                x = rows[i].getElementsByTagName("TD")[n];
+                y = rows[i + 1].getElementsByTagName("TD")[n];
+                // Check if the two rows should switch place, based on the direction, asc or desc:
+                if (dir == "asc") {
+                    if (n === 4) { // For launch time, compare date objects
+                        const dateX = new Date(x.innerText).getTime();
+                        const dateY = new Date(y.innerText).getTime();
+                        if (dateX > dateY) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (x.innerText.toLowerCase() > y.innerText.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                } else if (dir == "desc") {
+                    if (n === 4) { // For launch time, compare date objects
+                        const dateX = new Date(x.innerText).getTime();
+                        const dateY = new Date(y.innerText).getTime();
+                        if (dateX < dateY) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (x.innerText.toLowerCase() < y.innerText.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+            }
+            if (shouldSwitch) {
+                // If a switch has been marked, make the switch and mark that a switch has been done:
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                // Each time a switch is done, increase this count by 1:
+                switchcount ++; 
+            } else {
+                // If no switching has been done AND the direction is "asc", set the direction to "desc" and run the while loop again:
+                if (switchcount == 0 && dir == "asc") {
+                    dir = "desc";
+                    switching = true;
+                }
+            }
+        }
+    }
+</script>
+
+</body>
+</html>
