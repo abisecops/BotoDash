@@ -87,7 +87,7 @@
    python app.py
    ```
 
-   The application will start and be accessible at `http://127.0.0.1:5000`.
+   The application will start and be accessible at `http://127.0.0.1:5002`.
 
 ## Usage
 
