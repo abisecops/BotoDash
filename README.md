@@ -94,13 +94,6 @@
 - Navigate to the homepage to view and manage your EC2 instances and EBS volumes.
 - Use the sortable table headers to organize and filter data as needed.
 
-## Project Structure
-
-- **`app.py`**: The main Python script that runs the Flask application and interacts with AWS services.
-- **`templates/`**: Contains HTML templates for rendering the web interface.
-- **`static/`**: (Optional) Directory for static assets like CSS and JavaScript files.
-- **`requirements.txt`**: Lists Python package dependencies.
-
 ## Configuration
 
 You can adjust application settings and AWS resource filters directly in the `app.py` file to fit your needs.
